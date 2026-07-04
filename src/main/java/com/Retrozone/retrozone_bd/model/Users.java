@@ -1,13 +1,11 @@
 package com.Retrozone.retrozone_bd.model;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,10 +35,6 @@ public class Users {
     @NotBlank
     private String phone;
 
-    @Pattern(
-            regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$",
-            message = "El password debe tener 8 caracteres como minimo, una mayus, un numero y un simbolo especial"
-    )
     private String password;
 
     @NotBlank
@@ -49,6 +43,5 @@ public class Users {
 
     @NotBlank
     private String address;
-
 
 }

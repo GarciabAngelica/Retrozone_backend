@@ -8,12 +8,29 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Service
 @AllArgsConstructor
 public class UserService {
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
+
+    // Validamos el FORMATO de la contraseña aquí, sobre el valor que escribió
+    // el usuario, antes de encriptarla. Si esto viviera como @Pattern en la
+    // entidad Users, Hibernate lo evaluaría sobre el hash de BCrypt ya
+    // guardado en el campo (justo antes del INSERT), que nunca cumple el
+    // patrón — por eso NO puede ir ahí.
+    private static final Pattern PASSWORD_PATTERN =
+            Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$");
+
+    private void validatePasswordFormat(String rawPassword) {
+        if (rawPassword == null || !PASSWORD_PATTERN.matcher(rawPassword).matches()) {
+            throw new IllegalArgumentException(
+                    "El password debe tener 8 caracteres como minimo, una letra y un numero"
+            );
+        }
+    }
 
     private UsersDTO createResponse(Users user){
         UsersDTO usersDTO = new UsersDTO();
@@ -39,6 +56,7 @@ public class UserService {
     }
 
     public UsersDTO createUser(Users user){
+        validatePasswordFormat(user.getPassword());
         String encriptedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encriptedPassword);
         usersRepository.save(user);
@@ -52,7 +70,10 @@ public class UserService {
         if (userUpdtates.getFullName() != null) ogUser.setFullName(userUpdtates.getFullName());
         if (userUpdtates.getUserName() != null) ogUser.setUserName(userUpdtates.getUserName());
         if (userUpdtates.getEmail() != null) ogUser.setEmail(userUpdtates.getEmail());
-        if (userUpdtates.getPassword() != null) ogUser.setPassword(userUpdtates.getPassword());
+        if (userUpdtates.getPassword() != null) {
+            validatePasswordFormat(userUpdtates.getPassword());
+            ogUser.setPassword(passwordEncoder.encode(userUpdtates.getPassword()));
+        }
         if (userUpdtates.getPhone() != null) ogUser.setPhone(userUpdtates.getPhone());
         if (userUpdtates.getRegistrationDate() != null) ogUser.setRegistrationDate(userUpdtates.getRegistrationDate());
         if (userUpdtates.getAddress() != null) ogUser.setAddress(userUpdtates.getAddress());

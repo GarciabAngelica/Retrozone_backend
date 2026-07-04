@@ -2,6 +2,7 @@ package com.Retrozone.retrozone_bd.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,10 +27,10 @@ public class Product {
     @NotBlank
     private String productDescription;
 
-    @NotBlank
+    @NotNull
     private BigDecimal productPrice;
 
-    @NotBlank
+    @NotNull
     private Integer productStock;
 
     @NotBlank

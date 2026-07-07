@@ -11,15 +11,16 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/api/products")
 @AllArgsConstructor
+@CrossOrigin(origins = "*")
 public class ProductController {
     private final ProductService productService;
 
-    @GetMapping // http://localhost:8080/api/products
+    @GetMapping// http://localhost:8080/api/products
     public List<Product> getAllProducts() {
         return productService.getAllProducts();
     }
 
-    @GetMapping(path = "{productId}") // http://localhost:8080/api/products/id
+    @GetMapping(path = "/{productId}") // http://localhost:8080/api/products/id
     public Product getProductsById(@PathVariable("productId") Long id) {
         return productService.getProduct(id);
     }
@@ -29,7 +30,7 @@ public class ProductController {
         return productService.addProduct(productRequest);
     }
 
-    @DeleteMapping(path = "{productId}") // http://localhost:8080/api/products/id metodo DELETE
+    @DeleteMapping(path = "/{productId}") // http://localhost:8080/api/products/id metodo DELETE
     public Product deleteProductById(@PathVariable("productId") Long id) {
         return productService.deleteProductById(id);
     }

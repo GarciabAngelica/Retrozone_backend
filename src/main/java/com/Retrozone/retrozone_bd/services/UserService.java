@@ -7,7 +7,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
@@ -56,9 +58,15 @@ public class UserService {
     }
 
     public UsersDTO createUser(Users user){
+        if (usersRepository.existsByEmail(user.getEmail())) {
+            throw new IllegalArgumentException("El email ya está registrado: " + user.getEmail());
+        }
         validatePasswordFormat(user.getPassword());
         String encriptedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encriptedPassword);
+        // La fecha de registro la genera el servidor, no el cliente: el
+        // formulario de registro del frontend no pide este campo.
+        user.setRegistrationDate(LocalDate.now().toString());
         usersRepository.save(user);
         return createResponse(user);
     }
@@ -89,11 +97,14 @@ public class UserService {
         return createResponse(user);
     }
 
-    public Boolean loginUser(Users user){
-        Users savedUser = usersRepository.findByEmail(user.getEmail()).orElseThrow(
-                () -> new IllegalArgumentException("Jugador no encontrado")
-        );
-        return passwordEncoder.matches(user.getPassword(), savedUser.getPassword());
+    // Devuelve el usuario (sin password) si las credenciales son correctas,
+    // o vacío si el email no existe o el password no coincide. Con esto el
+    // Controller puede responder 200+usuario o 401 sin lanzar excepciones
+    // para el caso normal de "credenciales incorrectas".
+    public Optional<UsersDTO> loginUser(Users user){
+        return usersRepository.findByEmail(user.getEmail())
+                .filter(savedUser -> passwordEncoder.matches(user.getPassword(), savedUser.getPassword()))
+                .map(this::createResponse);
     }
 
 }

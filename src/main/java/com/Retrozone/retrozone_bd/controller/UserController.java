@@ -38,11 +38,9 @@ public class UserController {
         return userService.deleteUserById(id);
     }
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Users user) {
-        boolean valid = userService.loginUser(user);
-        if (valid) {
-            return ResponseEntity.ok("Login exitoso");
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas");
+    public ResponseEntity<UsersDTO> login(@RequestBody Users user) {
+        return userService.loginUser(user)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
 }

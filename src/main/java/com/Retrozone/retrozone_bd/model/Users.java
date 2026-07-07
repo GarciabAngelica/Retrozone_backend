@@ -41,7 +41,8 @@ public class Users {
     @DateTimeFormat
     private String registrationDate;
 
-    @NotBlank
+    // Sin @NotBlank: el formulario de registro del frontend no pide dirección,
+    // se puede completar después desde el perfil del usuario.
     private String address;
 
 }

@@ -1,47 +1,44 @@
-package com.Retrozone.retrozone_bd.model;
+ppackage com.Retrozone.retrozone_bd.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.List;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "users")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Users {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
-    @NotBlank
+    @Column(name = "user_fullname")
     private String fullName;
 
-    @NotBlank
+    @Column(name = "user_name")
     private String userName;
 
-    @NotBlank
-    @Email
+    @Column(name = "user_email")
     private String email;
 
-    @NotBlank
+    @Column(name = "user_phone")
     private String phone;
 
+    @Column(name = "user_password_hash")
     private String password;
 
-    @NotBlank
-    @DateTimeFormat
+    @Column(name = "user_registration_date")
     private String registrationDate;
 
-    @NotBlank
+    @Column(name = "user_address")
     private String address;
 
+    // RELACIÓN CON ADDRESS
+    @OneToMany(mappedBy = "user")
+    private List<Address> addresses;
 }

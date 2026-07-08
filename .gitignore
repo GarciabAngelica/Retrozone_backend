@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Frontend compilado (Opción B: Spring Boot sirve el frontend) ###
+# Se regenera con "npm run build" en el proyecto Retrozone + copiar dist/
+# a esta carpeta. No se comitea para no inflar el repo del backend ni
+# desincronizarse del código fuente real del frontend.
+src/main/resources/static/

@@ -41,6 +41,7 @@ public class Users {
     @DateTimeFormat
     private String registrationDate;
 
+    @NotBlank
     private String address;
 
 }

@@ -31,11 +31,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        // 5173 = puerto por defecto de Vite. 5500 = puerto por defecto de la
-        // extensión Live Server de VS Code, que es la que usa este equipo.
-        config.setAllowedOrigins(List.of(
-                "http://localhost:5173", "http://127.0.0.1:5173",
-                "http://localhost:5500", "http://127.0.0.1:5500"
+        // En vez de listar cada puerto suelto (5173 de Vite dev, 5500 de Live
+        // Server, 4173 de "npm run preview"...), permitimos cualquier puerto
+        // en localhost/127.0.0.1. Vite además cambia de puerto solo si el que
+        // pide ya está ocupado (4173 -> 4174 -> 4175...), así que una lista
+        // fija se queda corta tarde o temprano.
+        config.setAllowedOriginPatterns(List.of(
+                "http://localhost:*", "http://127.0.0.1:*"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
